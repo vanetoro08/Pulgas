@@ -11,29 +11,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * Clase para leer y procesar archivos de texto plano
  * @author Nicolas Agudelo Grajales
  */
-public class Lector {
-    File archivo; 
-    FileReader lector; 
-    FileWriter escritor; 
-    BufferedReader buffer; 
-    PrintWriter pw ;
-
-    public Lector() throws FileNotFoundException, IOException {       
-        String ruta = "/docsPulgas/puntajes.txt";
-        String ruta = "C:\\Users\\Nico\\Documents\\puntajes.txt";
-        this.archivo = new File(ruta);
-        lector = new FileReader(archivo);
-        escritor = new FileWriter(archivo);
-        pw = new PrintWriter(escritor);
-        buffer= new BufferedReader(lector);
-        
-    }
+public interface Lector {
     
+<<<<<<< HEAD
     public void anotarPuntaje(int puntaje) throws IOException{
         
         String strPuntajeMaxActual= "0";
@@ -56,5 +42,9 @@ public class Lector {
         
         pw.close();
     }
+=======
+    
+    public abstract ArrayList<String> leer(String localizacionArchivo)throws IOException;
+>>>>>>> 19d8f891578d4323dbc160c5fb2ac0aaca3dda57
     
 }
