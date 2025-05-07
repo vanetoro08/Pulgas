@@ -2,9 +2,11 @@ package gamePulgas.models;
 
 // @author vanes
 
+import basePulgas.models.EscritorArchivoTextoPlano;
 import basePulgas.models.GeneradorPulgas;
 import basePulgas.models.GraphicContainer;
 import basePulgas.models.Lector;
+import basePulgas.models.LectorArchivoTextoPlano;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -18,7 +20,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     private ArrayList<Pulga> pulgas; 
     private GeneradorPulgas generadorPulgas;
     private int puntajeTotal=0; 
-    private Lector lector; 
+    private LectorArchivoTextoPlano lector; 
     
     public CampoPulgas() throws IOException {
         setFocusable(true);
@@ -26,7 +28,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         
-        lector = new Lector(); 
+        lector = new LectorArchivoTextoPlano(); 
 
         pulgas = new ArrayList<>();
         
@@ -39,17 +41,30 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     }
     
     public void agregarPulgaNormal() {
-       int x = (int) (Math.random() * (getWidth() - 40));
-       int y = (int) (Math.random() * (getHeight() - 40));
-       PulgaNormal pulga = new PulgaNormal(x, y, 40, 40, 1, 200);
+       int x;
+       int y;
+       PulgaNormal pulga;
+       do{
+           x = (int) (Math.random() * (getWidth() - 40));
+           y = (int) (Math.random() * (getHeight() - 40));
+           pulga = new PulgaNormal(x, y, 40, 40, 1, 200);
+       }while(checkPosition(pulga));
+       
        pulgas.add(pulga);
        repaint();
    }
 
     public void agregarPulgaMutante() {
-       int x = (int) (Math.random() * (getWidth() - 40));
-       int y = (int) (Math.random() * (getHeight() - 40));
-       PulgaMutante pulga = new PulgaMutante(x, y, 40, 40, 2, 600);
+       int x;
+       int y;
+       PulgaMutante pulga;
+        do{
+            x = (int) (Math.random() * (getWidth() - 40));
+            y = (int) (Math.random() * (getHeight() - 40));
+            pulga = new PulgaMutante(x, y, 40, 40, 2, 600);
+        }while(checkPosition(pulga));
+       
+       
        pulgas.add(pulga);
        repaint();
         
@@ -59,8 +74,10 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         
         for(int i=0; i<pulgas.size(); i++){
             Pulga pulguita = pulgas.get(i);
-            pulguita.setX((int) (Math.random() * (getWidth() - 40))); 
-            pulguita.setY((int) (Math.random() * (getHeight() - 40)));
+            do{
+                pulguita.setX((int) (Math.random() * (getWidth() - 40))); 
+                pulguita.setY((int) (Math.random() * (getHeight() - 40)));
+            }while(checkPosition(pulguita));
             pulgas.set(i , pulguita);
         }
         repaint();
@@ -71,7 +88,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         if (SwingUtilities.isLeftMouseButton(e)) {
             PistolaPulguipium pistola = new PistolaPulguipium();
             pistola.setClick(new Point(e.getX(), e.getY()));
-            pistola.usarArma(pulgas);
+            puntajeTotal+=pistola.usarArma(pulgas);
             repaint();
         }
     }
@@ -82,15 +99,14 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             case KeyEvent.VK_P -> agregarPulgaNormal();
             case KeyEvent.VK_M -> agregarPulgaMutante();
             case KeyEvent.VK_S -> saltarPulgas();
-            case KeyEvent.VK_Q -> {
+            case KeyEvent.VK_Q -> { 
+            try {
+                anotarPuntuacion();
+            } catch (IOException ex) {
+                Logger.getLogger(CampoPulgas.class.getName()).log(Level.SEVERE, null, ex);
+            }
                 generadorPulgas.detener();
                 System.exit(0);
-            
-            try {
-                lector.anotarPuntaje(puntajeTotal);
-            } catch (IOException ex) {
-                System.out.println("error ;-;");
-            }
                 generadorPulgas.detener();
                 System.exit(0);
             }
@@ -113,7 +129,47 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
            pulga.paint(g);
        }
    }
-
+   
+   public boolean checkPosition(Pulga pulga){
+       if(pulgas.size()== 1){
+           return false; 
+       }
+       for(Pulga pulgaComp : pulgas){
+           if(pulga== pulgaComp){
+               continue;
+           }
+           
+           if(pulga.getX() + pulga.getWidth() >= pulgaComp.getX() && pulga.getX() < pulgaComp.getX() + pulgaComp.getWidth()){
+               return true; 
+           }else if(pulga.getY() + pulga.getHeight() >= pulgaComp.getY() && pulga.getY() < pulgaComp.getY() + pulgaComp.getHeight()){
+               return true; 
+           }
+       }
+       
+       return false; 
+   }
+   
+   public void anotarPuntuacion() throws IOException{
+       
+       ArrayList<String> puntajes = lector.leer("puntajes.txt");
+       int puntaje=0; 
+       for(int i=0; i< puntajes.size(); i++){
+           String s= puntajes.get(i);
+           try {
+               puntaje = Integer.parseInt(s);
+               System.out.println(puntaje);
+           } catch (NumberFormatException e) {
+                System.err.println("Invalid string format: " + e.getMessage());
+            }
+       }
+       if(puntaje<puntajeTotal){
+           EscritorArchivoTextoPlano escritor = new EscritorArchivoTextoPlano("puntajes.txt"); 
+           ArrayList<String> nuevoPuntaje = new ArrayList<String>();
+           nuevoPuntaje.add("" + puntajeTotal);
+           escritor.escribir(nuevoPuntaje);
+       }
+       
+   }
 
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}
