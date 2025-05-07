@@ -19,8 +19,11 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     
     private ArrayList<Pulga> pulgas; 
     private GeneradorPulgas generadorPulgas;
-    private int puntajeTotal=0; 
+    private int puntajeTotal = 0; 
+    private int puntajeMaximo = 0;
     private LectorArchivoTextoPlano lector; 
+    private JLabel labelPuntajeActual; 
+    private JLabel labelPuntajeMaximo;
     
     public CampoPulgas() throws IOException {
         setFocusable(true);
@@ -38,6 +41,18 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         addMouseListener(this);
         addKeyListener(this);
         requestFocusInWindow();
+        
+        labelPuntajeActual = new JLabel("Puntaje: " + puntajeTotal);
+        labelPuntajeActual.setForeground(Color.WHITE);
+        labelPuntajeActual.setFont(new Font("Arial", Font.BOLD, 16));
+        labelPuntajeActual.setBounds(10, 10, 150, 30);
+        this.add(labelPuntajeActual);
+        
+        labelPuntajeMaximo = new JLabel("Récord: " + puntajeMaximo);
+        labelPuntajeMaximo.setForeground(Color.WHITE);
+        labelPuntajeMaximo.setFont(new Font("Arial", Font.BOLD, 16));
+        labelPuntajeMaximo.setBounds(650, 10, 150, 30);
+        this.add(labelPuntajeMaximo);
     }
     
     public void agregarPulgaNormal() {
@@ -87,14 +102,13 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            PistolaPulguipium pistola = new PistolaPulguipium();
+            PistolaPulguipium pistola = new PistolaPulguipium();           
             pistola.setClick(new Point(e.getX(), e.getY()));
-<<<<<<< HEAD
-            pistola.usarArma(pulgas);
+            
+            int pulgasDestruidas = pistola.usarArma(pulgas); 
+            puntajeTotal += pulgasDestruidas;                  
+            labelPuntajeActual.setText("Puntaje: " + puntajeTotal);
             verificarFinDelJuego();
-=======
-            puntajeTotal+=pistola.usarArma(pulgas);
->>>>>>> 19d8f891578d4323dbc160c5fb2ac0aaca3dda57
             repaint();
         }
     }
@@ -118,23 +132,32 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             }
             case KeyEvent.VK_SPACE -> {
                 MisilPulgoson misil = new MisilPulgoson();
-                puntajeTotal+=
-                misil.usarArma(pulgas);
+                
+                puntajeTotal+= misil.usarArma(pulgas);
+                labelPuntajeActual.setText("Puntaje: " + puntajeTotal);               
                 verificarFinDelJuego();
-                System.out.println("puntaje total " + puntajeTotal);
-                repaint();
-               
+                repaint();              
             }
             
         }
     }
     
-<<<<<<< HEAD
     private void verificarFinDelJuego() {
         if (pulgas.isEmpty()) {
-            // Mostrar diálogo para reiniciar o salir
+            generadorPulgas.detener();
+
+            if (puntajeTotal > puntajeMaximo) {
+                puntajeMaximo = puntajeTotal;
+                labelPuntajeMaximo.setText("Récord: " + puntajeMaximo);
+                try {
+                    anotarPuntuacion();
+                } catch (IOException ex) {
+                    System.out.println("Error al guardar el puntaje: " + ex.getMessage());
+                }
+            }
+
             int respuesta = JOptionPane.showConfirmDialog(this,
-                "¡Todas las pulgas han sido destruidas!\n" +
+                "Todas las pulgas han sido destruidas\n" +
                 "Puntaje total: " + puntajeTotal + "\n" +
                 "¿Desea reiniciar la partida?",
                 "Juego terminado",
@@ -142,19 +165,16 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 puntajeTotal = 0;
+                labelPuntajeActual.setText("Puntaje: " + puntajeTotal);
                 pulgas.clear();
-                generadorPulgas.start(); // Reinicia el generador (asegúrate que start() pueda reiniciar)
+                generadorPulgas = new GeneradorPulgas(this);
+                generadorPulgas.start();
                 repaint();
+                
             } else {
-                /*try {
-                    lector.anotarPuntaje(puntajeTotal); // Guarda el puntaje en archivo
-                } catch (IOException ex) {
-                    System.out.println("Error al guardar el puntaje: " + ex.getMessage());
-                }*/
-                generadorPulgas.detener();
                 System.exit(0);
             }
-        }
+}
     }
 
     @Override
@@ -165,16 +185,6 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         }
     }
        
-   
-=======
-   @Override
-   protected void paintComponent(Graphics g) {
-       super.paintComponent(g);
-       for (Pulga pulga : pulgas) {
-           pulga.paint(g);
-       }
-   }
-   
    public boolean checkPosition(Pulga pulga){
        if(pulgas.size()== 1){
            return false; 
@@ -197,17 +207,19 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
    public void anotarPuntuacion() throws IOException{
        
        ArrayList<String> puntajes = lector.leer("puntajes.txt");
-       int puntaje=0; 
+       int puntajeMaximoArchivo=0; 
        for(int i=0; i< puntajes.size(); i++){
            String s= puntajes.get(i);
            try {
-               puntaje = Integer.parseInt(s);
-               System.out.println(puntaje);
+                int puntaje = Integer.parseInt(s);
+                if (puntaje > puntajeMaximoArchivo) {
+                    puntajeMaximoArchivo = puntaje;
+                }
            } catch (NumberFormatException e) {
-                System.err.println("Invalid string format: " + e.getMessage());
+                System.err.println("Formato invalido" + e.getMessage());
             }
        }
-       if(puntaje<puntajeTotal){
+       if(puntajeMaximoArchivo <puntajeTotal){
            EscritorArchivoTextoPlano escritor = new EscritorArchivoTextoPlano("puntajes.txt"); 
            ArrayList<String> nuevoPuntaje = new ArrayList<String>();
            nuevoPuntaje.add("" + puntajeTotal);
@@ -215,7 +227,6 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
        }
        
    }
->>>>>>> 19d8f891578d4323dbc160c5fb2ac0aaca3dda57
 
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}

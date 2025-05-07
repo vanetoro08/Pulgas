@@ -5,7 +5,7 @@ package basePulgas.models;
 import gamePulgas.models.CampoPulgas;
 
 public class GeneradorPulgas extends Thread {
-    private final CampoPulgas campoPulgas;
+    private CampoPulgas campoPulgas;
     private boolean running = true;
     
     public GeneradorPulgas(CampoPulgas campoPulgas) {
@@ -30,7 +30,12 @@ public class GeneradorPulgas extends Thread {
             if (tiempoTranscurrido - ultimaPulgaMutante >= 10000) {
                 campoPulgas.agregarPulgaMutante();
                 ultimaPulgaMutante = tiempoTranscurrido;
-            }           
+            } 
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {               
+               running = false;
+            }
         }
     }
     

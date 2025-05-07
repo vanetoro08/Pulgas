@@ -15,8 +15,6 @@ import java.util.ArrayList;
 
 public class EscritorArchivoTextoPlano implements Escritor{
     
-
-    
     
     private final Charset charset = Charset.forName("UTF-8");
     
