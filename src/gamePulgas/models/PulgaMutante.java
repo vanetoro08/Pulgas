@@ -30,14 +30,9 @@ public class PulgaMutante extends Pulga{
 
     
 
-    @Override
-    public void refresh() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Rectangle getBoundaries() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    @Override public void refresh(){}
+    @Override public Rectangle getBoundaries() {
+        return null;
+    } 
     
 }

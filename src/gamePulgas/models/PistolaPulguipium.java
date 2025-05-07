@@ -1,26 +1,42 @@
 package gamePulgas.models;
 
-// @author vanes
-
-import gamePulgas.models.Arma;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.SwingUtilities;
 
-public class PistolaPulguipium extends Arma{
+/**
+ * Clase que representa el arma PistolaPulguipium
+ * Esta arma permite eliminar una pulga si el jugador hace clic sobre ella
+ * Si se trata de una {@code PulgaMutante}, se le reduce el escudo hasta transformarse
+ * en una {@code PulgaNormal}; si es una {@code PulgaNormal}, se elimina directamente
+ * 
+ * Hereda de la clase abstracta {@code Arma}
+ * 
+ * @author Vanessa Toro Sepluveda
+ */
+public class PistolaPulguipium extends Arma {
+
     private Point click;
+
+    /**
+     * Establece la posición del clic donde el jugador ha disparado
+     * 
+     * @param click Punto del clic del mouse.
+     */
     public void setClick(Point click) {
         this.click = click;
     }
-    
+
+    /**
+     * Usa el arma PistolaPulguipium para disparar a una pulga en la posición clickeada
+     * 
+     * @param pulgas Lista de pulgas activas en el campo.
+     * @return La cantidad de puntos obtenidos al eliminar una pulga. Devuelve 0 si no se impacta ninguna
+     */
     @Override
-    public int usarArma( ArrayList<Pulga> pulgas) {
-        int puntosConseguidos = 0; 
-  
+    public int usarArma(ArrayList<Pulga> pulgas) {
+        int puntosConseguidos = 0;
+
         for (int i = 0; i < pulgas.size(); i++) {
             Pulga pulga = pulgas.get(i);
             Rectangle bounds = new Rectangle(pulga.getX(), pulga.getY(), pulga.getWidth(), pulga.getHeight());
@@ -41,6 +57,7 @@ public class PistolaPulguipium extends Arma{
                 return puntosConseguidos;
             }
         }
+
         return 0;
     }
 }

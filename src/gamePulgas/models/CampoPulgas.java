@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Clase que representa el campo de batalla donde se desarrolla el juego de las pulgas.
+ * Maneja la lógica de aparición, movimiento, interacción y puntuación de las pulgas.
+ * @author Vanessa Toro Sepulveda
+ */
 public class CampoPulgas extends JPanel implements GraphicContainer, MouseListener,KeyListener{
     
     private ArrayList<Pulga> pulgas; 
@@ -24,7 +29,11 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     private LectorArchivoTextoPlano lector; 
     private JLabel labelPuntajeActual; 
     private JLabel labelPuntajeMaximo;
-    
+
+    /**
+     * Constructor que inicializa el campo, los elementos visuales y logicos del juego
+     * @throws IOException Si ocurre un error al leer los archivos de puntaje
+     */    
     public CampoPulgas() throws IOException {
         setFocusable(true);
         setPreferredSize(new Dimension(800, 600));
@@ -55,6 +64,9 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         this.add(labelPuntajeMaximo);
     }
     
+    /**
+     * Agrega una pulga normal en una posicion aleatoria del campo, sin superposicion
+     */    
     public void agregarPulgaNormal() {
        int x;
        int y;
@@ -68,7 +80,9 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
        pulgas.add(pulga);
        repaint();
    }
-
+    /**
+     * Agrega una pulga mutante en una posición aleatoria del campo, sin superposicion
+     */
     public void agregarPulgaMutante() {
        int x;
        int y;
@@ -84,7 +98,9 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
        repaint();
         
     }
-    
+    /**
+     * Hace que todas las pulgas salten a nuevas posiciones aleatorias
+     */    
     public void saltarPulgas(){
         
         for(int i=0; i<pulgas.size(); i++){
@@ -98,21 +114,30 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         repaint();
     }
     
-    
+    /**
+     * Maneja los clics del mouse. Dispara el arma si se hace clic izquierdo
+     */    
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             PistolaPulguipium pistola = new PistolaPulguipium();           
             pistola.setClick(new Point(e.getX(), e.getY()));
-            
-            int pulgasDestruidas = pistola.usarArma(pulgas); 
-            puntajeTotal += pulgasDestruidas;                  
+             
+            puntajeTotal += pistola.usarArma(pulgas);                  
             labelPuntajeActual.setText("Puntaje: " + puntajeTotal);
             verificarFinDelJuego();
             repaint();
         }
     }
     
+    /**
+     * Maneja las teclas presionadas por el usuario
+     * P - agrega pulga normal
+     * M - agrega pulga mutante
+     * S - hace saltar a las pulgas
+     * Q - guarda puntaje y cierra el juego
+     * Espacio - dispara misil
+     */    
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -142,6 +167,9 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         }
     }
     
+    /**
+     * Verifica si el juego ha terminado (todas las pulgas han sido eliminadas) y gestiona el reinicio o cierre
+     */    
     private void verificarFinDelJuego() {
         if (pulgas.isEmpty()) {
             generadorPulgas.detener();
@@ -174,9 +202,12 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             } else {
                 System.exit(0);
             }
-}
+        }
     }
-
+    
+    /**
+     * Dibuja las pulgas en el campo
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -184,7 +215,12 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             pulga.paint(g);
         }
     }
-       
+    
+    /**
+     * Verifica si una pulga se superpone con otra en el campo
+     * @param pulga La pulga a verificar
+     * @return true si hay superposicion, false si no
+     */       
    public boolean checkPosition(Pulga pulga){
        if(pulgas.size()== 1){
            return false; 
@@ -203,7 +239,10 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
        
        return false; 
    }
-   
+    /**
+     * Guarda el puntaje si supera el puntaje máximo anterior en el archivo correspondiente
+     * @throws IOException Si hay un error escribiendo el archivo
+     */   
    public void anotarPuntuacion() throws IOException{
        
        ArrayList<String> puntajes = lector.leer("puntajes.txt");
