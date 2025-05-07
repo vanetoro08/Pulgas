@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- *
- * @author vanes
+ * Interfaz encargada de escribir
+ * @author Nicolas Agudelo
  */
 public interface Escritor {
 

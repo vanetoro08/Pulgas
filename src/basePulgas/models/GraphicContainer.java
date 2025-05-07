@@ -8,11 +8,11 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Nico
+ * @author Nicolas Agudelo 
+ * Interfaz que contiene la grafica
  */
 
 public interface GraphicContainer {
     public void refresh();
     public Rectangle getBoundaries();
 }
-

@@ -1,34 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package gamePulgas.models;
 
 import java.awt.Rectangle;
 
 /**
- *
- * @author Nico
+ * Representa una pulga normal en el juego
+ * @author Nicolas Agudelo Grajales
  */
 public class PulgaNormal extends Pulga {
 
-      
+    /**
+     * Constructor que inicializa una pulga normal con sus atributos basicos
+     * 
+     * @param x      Coordenada X
+     * @param y      Coordenada Y
+     * @param height Altura del sprite
+     * @param width  Ancho del sprite
+     * @param vida   Vida inicial
+     * @param puntos Puntos que otorga si es destruida
+     */
     public PulgaNormal(int x, int y, int height, int width, int vida, int puntos) {
-        super(x, y, height, width, vida, "/imagesPulgas/pulgaNormal.png",  puntos);
-    }
-        
-    
-    
-    @Override
-    public void refresh() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super(x, y, height, width, vida, "/imagesPulgas/pulgaNormal.png", puntos);
     }
 
+    @Override
+    public void refresh() {}
     @Override
     public Rectangle getBoundaries() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
-
-    
-    
 }

@@ -152,8 +152,6 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             }
                 generadorPulgas.detener();
                 System.exit(0);
-                generadorPulgas.detener();
-                System.exit(0);
             }
             case KeyEvent.VK_SPACE -> {
                 MisilPulgoson misil = new MisilPulgoson();
