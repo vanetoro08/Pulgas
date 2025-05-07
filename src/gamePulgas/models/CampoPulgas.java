@@ -17,8 +17,8 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     
     private ArrayList<Pulga> pulgas; 
     private GeneradorPulgas generadorPulgas;
-    //private int puntajeTotal=0; 
-    //private Lector lector; 
+    private int puntajeTotal=0; 
+    private Lector lector; 
     
     public CampoPulgas() throws IOException {
         setFocusable(true);
@@ -26,7 +26,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         
-        //lector = new Lector(); 
+        lector = new Lector(); 
 
         pulgas = new ArrayList<>();
         
@@ -85,20 +85,20 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             case KeyEvent.VK_Q -> {
                 generadorPulgas.detener();
                 System.exit(0);
-            }
-            /*try {
+            
+            try {
                 lector.anotarPuntaje(puntajeTotal);
             } catch (IOException ex) {
-                Logger.getLogger(CampoPulgas.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("error ;-;");
             }
                 generadorPulgas.detener();
                 System.exit(0);
-            }*/
+            }
             case KeyEvent.VK_SPACE -> {
                 MisilPulgoson misil = new MisilPulgoson();
-                //puntajeTotal+=
+                puntajeTotal+=
                 misil.usarArma(pulgas);
-                //System.out.println("puntaje total " + puntajeTotal);
+                System.out.println("puntaje total " + puntajeTotal);
                 repaint();
                
             }
