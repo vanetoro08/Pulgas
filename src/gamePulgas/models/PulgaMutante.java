@@ -15,8 +15,8 @@ public class PulgaMutante extends Pulga{
     private int escudo; 
     
     
-    public PulgaMutante(int x, int y, int height, int width, int vida) {
-        super(x, y, height, width, vida,"/imagesPulgas/pulgaMutante.png");
+    public PulgaMutante(int x, int y, int height, int width, int vida, int puntos) {
+        super(x, y, height, width, vida,"/imagesPulgas/pulgaMutante.png", puntos);
         this.escudo=vida; 
     }
 

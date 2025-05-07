@@ -18,13 +18,15 @@ public abstract class Pulga extends SpritesContainer{
     
     private boolean viva= true;
     private int vida; 
+    private int puntos; 
     private ImageObserver imageObserver; 
     private ImageIcon image;    
     
-    public Pulga(int x, int y, int height, int width, int vida,String imagePath) {
+    public Pulga(int x, int y, int height, int width, int vida,String imagePath, int puntos) {
         super(x, y, height, width);
         this.vida= vida;
         this.image = new ImageIcon(getClass().getResource(imagePath));
+        this.puntos = puntos; 
     }
     
     @Override   
@@ -48,6 +50,10 @@ public abstract class Pulga extends SpritesContainer{
 
     public void setVida(int vida) {
         this.vida = vida;
+    }
+
+    public int getPuntos() {
+        return puntos;
     }
     
     

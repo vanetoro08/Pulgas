@@ -3,23 +3,32 @@ package gamePulgas.models;
 // @author vanes
 
 import basePulgas.models.GraphicContainer;
+import basePulgas.models.Lector;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CampoPulgas extends JPanel implements GraphicContainer, MouseListener,KeyListener  {
     private ArrayList<PulgaNormal> pulgasNormales;
     private ArrayList<PulgaMutante> pulgasMutantes;
+    private ArrayList<Pulga> pulgas; 
+    private int puntajeTotal=0; 
+    private Lector lector; 
     
-    public CampoPulgas() {
+    public CampoPulgas() throws IOException {
         setFocusable(true);
         setPreferredSize(new Dimension(800, 600));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         
+        lector= new Lector(); 
         pulgasNormales = new ArrayList<>();
         pulgasMutantes = new ArrayList<>();
+        pulgas = new ArrayList<>();
         
         addMouseListener(this);
         addKeyListener(this);
@@ -29,7 +38,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     private void agregarPulgaNormal() {
        int x = (int) (Math.random() * (getWidth() - 40));
        int y = (int) (Math.random() * (getHeight() - 40));
-       PulgaNormal pulga = new PulgaNormal(x, y, 40, 40, 1);
+       PulgaNormal pulga = new PulgaNormal(x, y, 40, 40, 1, 200);
        pulgasNormales.add(pulga);
        repaint();
    }
@@ -37,17 +46,29 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
     private void agregarPulgaMutante() {
        int x = (int) (Math.random() * (getWidth() - 40));
        int y = (int) (Math.random() * (getHeight() - 40));
-       PulgaMutante pulga = new PulgaMutante(x, y, 40, 40, 2);
+       PulgaMutante pulga = new PulgaMutante(x, y, 40, 40, 2, 600);
        pulgasMutantes.add(pulga);
        repaint();
         
     }
     
+    private void saltarPulgas(){
+        for(int i=0; i<pulgas.size(); i++){
+            Pulga pulguita = pulgas.get(i);
+            pulguita.setX((int) (Math.random() * (getWidth() - 40))); 
+            pulguita.setY((int) (Math.random() * (getHeight() - 40)));
+            pulgas.set(i , pulguita);
+        }
+        repaint();
+    }
+    
+    
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             PistolaPulguipium pistola = new PistolaPulguipium();
             Point click = new Point(e.getX(), e.getY());
-            pistola.usarArma(click, pulgasNormales, pulgasMutantes);
+            puntajeTotal+= pistola.usarArma(click, pulgasNormales, pulgasMutantes);
+            System.out.println("puntaje total " + puntajeTotal);
             repaint();
         }
     }
@@ -57,13 +78,23 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         switch (e.getKeyCode()) {
             case KeyEvent.VK_P -> agregarPulgaNormal();
             case KeyEvent.VK_M -> agregarPulgaMutante();
-            //case KeyEvent.VK_S -> saltarPulgas();
-            case KeyEvent.VK_Q -> System.exit(0);
+            case KeyEvent.VK_S -> saltarPulgas();
+            case KeyEvent.VK_Q -> {
+            try {
+                lector.anotarPuntaje(puntajeTotal);
+            } catch (IOException ex) {
+                Logger.getLogger(CampoPulgas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                System.exit(0);
+            }
             case KeyEvent.VK_SPACE -> {
                 MisilPulgoson misil = new MisilPulgoson();
-                misil.usarArma(pulgasNormales, pulgasMutantes);
+                puntajeTotal+=misil.usarArma(pulgasNormales, pulgasMutantes);
+                System.out.println("puntaje total " + puntajeTotal);
                 repaint();
+               
             }
+            
         }
     }
     

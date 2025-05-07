@@ -13,8 +13,8 @@ import java.awt.Rectangle;
 public class PulgaNormal extends Pulga {
 
       
-    public PulgaNormal(int x, int y, int height, int width, int vida) {
-        super(x, y, height, width, vida, "/imagesPulgas/pulgaNormal.png");
+    public PulgaNormal(int x, int y, int height, int width, int vida, int puntos) {
+        super(x, y, height, width, vida, "/imagesPulgas/pulgaNormal.png",  puntos);
     }
         
     

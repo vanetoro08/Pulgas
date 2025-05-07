@@ -12,28 +12,30 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 public class PistolaPulguipium{
-    public void usarArma(Point click, ArrayList<PulgaNormal> normales, ArrayList<PulgaMutante> mutantes) {
- 
+    public int usarArma(Point click, ArrayList<PulgaNormal> normales, ArrayList<PulgaMutante> mutantes) {
+        int puntosConseguidos; 
         for (int i = 0; i < mutantes.size(); i++) {
             PulgaMutante pm = mutantes.get(i);
             Rectangle bounds = new Rectangle(pm.getX(), pm.getY(), pm.getWidth(), pm.getHeight());
             if (bounds.contains(click)) {
                 pm.setEscudo(pm.getEscudo() - 1);
                 if (pm.getEscudo() <= 1) {
-                    PulgaNormal nueva = new PulgaNormal(pm.getX(), pm.getY(), pm.getWidth(), pm.getHeight(), 1);
+                    PulgaNormal nueva = new PulgaNormal(pm.getX(), pm.getY(), pm.getWidth(), pm.getHeight(), 1, 600);
                     mutantes.remove(i);
                     normales.add(nueva);
                 }
-                return;
+                return 0;
             }
         }
         for (int i = 0; i < normales.size(); i++) {
             PulgaNormal pn = normales.get(i);
             Rectangle bounds = new Rectangle(pn.getX(), pn.getY(), pn.getWidth(), pn.getHeight());
             if (bounds.contains(click)) {
+                puntosConseguidos= normales.get(i).getPuntos();
                 normales.remove(i);
-                return;
+                return puntosConseguidos;
             }
         }
+        return 0;
     }
 }
