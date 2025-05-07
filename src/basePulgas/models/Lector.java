@@ -24,15 +24,37 @@ public class Lector {
     PrintWriter pw ;
 
     public Lector() throws FileNotFoundException, IOException {
-        String ruta = "docsPulgas/puntajes.txt";
+        String ruta = "C:\\Users\\Nico\\Documents\\puntajes.txt";
         this.archivo = new File(ruta);
+        lector = new FileReader(archivo);
         escritor = new FileWriter(archivo);
         pw = new PrintWriter(escritor);
+        buffer= new BufferedReader(lector);
         
     }
     
     public void anotarPuntaje(int puntaje) throws IOException{
-        pw.println(puntaje);
+        
+        String strPuntajeMaxActual= "0";
+        String linea;
+        int puntajeMaxActual=100000;
+        while((linea=buffer.readLine())!=null){
+            strPuntajeMaxActual= linea; 
+        }
+        System.out.println(strPuntajeMaxActual);
+        if(strPuntajeMaxActual == null){
+            String texto = "" + puntaje;
+            pw.println(texto);
+        }else{
+            puntajeMaxActual = Integer.parseInt(strPuntajeMaxActual); 
+            if(puntaje> puntajeMaxActual){
+                String texto = "" + puntaje;
+                pw.println(texto);
+            }
+        }
+        
+        
+        pw.close();
     }
     
 }

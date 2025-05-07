@@ -83,7 +83,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
             try {
                 lector.anotarPuntaje(puntajeTotal);
             } catch (IOException ex) {
-                Logger.getLogger(CampoPulgas.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("error ;-;");
             }
                 System.exit(0);
             }
