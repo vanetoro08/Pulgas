@@ -65,13 +65,15 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         }
         repaint();
     }
-        
+    
+    
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             PistolaPulguipium pistola = new PistolaPulguipium();
             pistola.setClick(new Point(e.getX(), e.getY()));
             pistola.usarArma(pulgas);
+            verificarFinDelJuego();
             repaint();
         }
     }
@@ -98,6 +100,7 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
                 MisilPulgoson misil = new MisilPulgoson();
                 puntajeTotal+=
                 misil.usarArma(pulgas);
+                verificarFinDelJuego();
                 System.out.println("puntaje total " + puntajeTotal);
                 repaint();
                
@@ -106,14 +109,42 @@ public class CampoPulgas extends JPanel implements GraphicContainer, MouseListen
         }
     }
     
-   @Override
-   protected void paintComponent(Graphics g) {
-       super.paintComponent(g);
-       for (Pulga pulga : pulgas) {
-           pulga.paint(g);
-       }
-   }
+    private void verificarFinDelJuego() {
+        if (pulgas.isEmpty()) {
+            // Mostrar diálogo para reiniciar o salir
+            int respuesta = JOptionPane.showConfirmDialog(this,
+                "¡Todas las pulgas han sido destruidas!\n" +
+                "Puntaje total: " + puntajeTotal + "\n" +
+                "¿Desea reiniciar la partida?",
+                "Juego terminado",
+                JOptionPane.YES_NO_OPTION);
 
+            if (respuesta == JOptionPane.YES_OPTION) {
+                puntajeTotal = 0;
+                pulgas.clear();
+                generadorPulgas.start(); // Reinicia el generador (asegúrate que start() pueda reiniciar)
+                repaint();
+            } else {
+                /*try {
+                    lector.anotarPuntaje(puntajeTotal); // Guarda el puntaje en archivo
+                } catch (IOException ex) {
+                    System.out.println("Error al guardar el puntaje: " + ex.getMessage());
+                }*/
+                generadorPulgas.detener();
+                System.exit(0);
+            }
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        for (Pulga pulga : pulgas) {
+            pulga.paint(g);
+        }
+    }
+       
+   
 
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}

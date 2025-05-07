@@ -52,8 +52,7 @@ public class Lector {
                 String texto = "" + puntaje;
                 pw.println(texto);
             }
-        }
-        
+        }       
         
         pw.close();
     }
