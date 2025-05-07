@@ -11,28 +11,33 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 
-public class PistolaPulguipium{
-    public int usarArma(Point click, ArrayList<PulgaNormal> normales, ArrayList<PulgaMutante> mutantes) {
-        int puntosConseguidos; 
-        for (int i = 0; i < mutantes.size(); i++) {
-            PulgaMutante pm = mutantes.get(i);
-            Rectangle bounds = new Rectangle(pm.getX(), pm.getY(), pm.getWidth(), pm.getHeight());
+public class PistolaPulguipium extends Arma{
+    private Point click;
+    public void setClick(Point click) {
+        this.click = click;
+    }
+    
+    @Override
+    public int usarArma( ArrayList<Pulga> pulgas) {
+        int puntosConseguidos = 0; 
+  
+        for (int i = 0; i < pulgas.size(); i++) {
+            Pulga pulga = pulgas.get(i);
+            Rectangle bounds = new Rectangle(pulga.getX(), pulga.getY(), pulga.getWidth(), pulga.getHeight());
+
             if (bounds.contains(click)) {
-                pm.setEscudo(pm.getEscudo() - 1);
-                if (pm.getEscudo() <= 1) {
-                    PulgaNormal nueva = new PulgaNormal(pm.getX(), pm.getY(), pm.getWidth(), pm.getHeight(), 1, 600);
-                    mutantes.remove(i);
-                    normales.add(nueva);
+                if (pulga instanceof PulgaMutante) {
+                    PulgaMutante pm = (PulgaMutante) pulga;
+                    pm.setEscudo(pm.getEscudo() - 1);
+                    if (pm.getEscudo() <= 1) {
+                        PulgaNormal nueva = new PulgaNormal(pm.getX(), pm.getY(), pm.getWidth(), pm.getHeight(), 1, 600);
+                        pulgas.remove(i);
+                        pulgas.add(nueva);
+                    }
+                } else if (pulga instanceof PulgaNormal) {
+                    puntosConseguidos = pulga.getPuntos();
+                    pulgas.remove(i);
                 }
-                return 0;
-            }
-        }
-        for (int i = 0; i < normales.size(); i++) {
-            PulgaNormal pn = normales.get(i);
-            Rectangle bounds = new Rectangle(pn.getX(), pn.getY(), pn.getWidth(), pn.getHeight());
-            if (bounds.contains(click)) {
-                puntosConseguidos= normales.get(i).getPuntos();
-                normales.remove(i);
                 return puntosConseguidos;
             }
         }

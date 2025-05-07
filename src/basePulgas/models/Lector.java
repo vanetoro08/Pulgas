@@ -24,7 +24,8 @@ public class Lector {
     PrintWriter pw ;
 
     public Lector() throws FileNotFoundException, IOException {
-        String ruta = "docsPulgas/puntajes.txt";
+        
+        String ruta = "/docsPulgas/puntajes.txt";
         this.archivo = new File(ruta);
         escritor = new FileWriter(archivo);
         pw = new PrintWriter(escritor);
